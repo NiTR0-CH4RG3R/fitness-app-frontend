@@ -9,9 +9,22 @@ import { Link } from 'react-router-dom';
 
 
 export default function () {
+  const theme= useTheme();
+  const [isCollapsed,setIsCollapsed]=useState(false);
+  const [selected,isSelected]=useState("Dashbordd");
+
   return (
-    <div>
-      Sidebar
-    </div>
+    <Box
+    sx={{
+      "& .pro-sidebar-inner" :{
+        backgroundColor:"#000 !important"
+      },
+      "& .pro-icon-wrapper":{
+        backgroundColor:"transparent !important"
+      }
+    }}
+    >
+
+    </Box>
   );
 }
