@@ -4,11 +4,13 @@ import Exercises from "./scenes/exercises/Exercises";
 import Goals from "./scenes/goals/Goals";
 import Profile from "./scenes/profile/Profile";
 import Workout_plan from "./scenes/workout_plan/Workout_plan";
+import  Sidebar  from "./scenes/global/Sidebar";
 
 function App() {
   return (
     <div className="App">
       <div className="content">
+        <Sidebar/>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashbordd />} />
