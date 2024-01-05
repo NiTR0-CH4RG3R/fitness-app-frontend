@@ -8,6 +8,7 @@ import Workout_plan from "./scenes/workout_plan/Workout_plan";
 function App() {
   return (
     <div className="App">
+      <div className="content">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashbordd />} />
@@ -17,6 +18,7 @@ function App() {
           <Route path="/workout_plan" element={<Workout_plan/>}/>
         </Routes>
       </BrowserRouter>
+      </div>
     </div>
   );
 }
