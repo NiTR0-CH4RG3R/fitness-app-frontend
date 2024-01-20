@@ -6,15 +6,22 @@ import ExercisesCard from "../../Components/Card/ExercisesCard";
 
 
 export default function Exercises() {
+
+  const [data,setData]=React.useState({
+    imagelink:"",
+    title:"",
+    content:""
+  });
+
   return (
     <div>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
            <ExercisesCard
-           imagelink="link"
-           title="Exercises1"
-           content="Add here content"
+           imagelink={data.imagelink}
+           title={data.title}
+           content={data.content}
            
            />
           </Grid>
