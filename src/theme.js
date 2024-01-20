@@ -6,6 +6,14 @@ export const themeSettings = (mode) => {
   return {
     palette: {
       mode: mode,
+      ...(mode === 'dark' ? {
+        background: {
+          default: '#222',
+          paper: '#272727'
+        },
+      } : {
+
+      })
       // ...(mode === "dark"
       //   ? {
       //     // palette values for dark mode
