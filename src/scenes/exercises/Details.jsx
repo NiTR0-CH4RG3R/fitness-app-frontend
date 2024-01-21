@@ -3,31 +3,28 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import YouTube from "react-youtube";
 import Carousel from "react-material-ui-carousel";
-import Rating from '@mui/material/Rating';
-import Typography from '@mui/material/Typography';
+import Rating from "@mui/material/Rating";
+import Typography from "@mui/material/Typography";
 
-import Button from '@mui/joy/Button';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Textarea from '@mui/joy/Textarea';
-import IconButton from '@mui/joy/IconButton';
-import Menu from '@mui/joy/Menu';
-import MenuItem from '@mui/joy/MenuItem';
-import ListItemDecorator from '@mui/joy/ListItemDecorator';
-import FormatBold from '@mui/icons-material/FormatBold';
-import FormatItalic from '@mui/icons-material/FormatItalic';
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import Check from '@mui/icons-material/Check';
-
-
+import Button from "@mui/joy/Button";
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import Textarea from "@mui/joy/Textarea";
+import IconButton from "@mui/joy/IconButton";
+import Menu from "@mui/joy/Menu";
+import MenuItem from "@mui/joy/MenuItem";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
+import FormatBold from "@mui/icons-material/FormatBold";
+import FormatItalic from "@mui/icons-material/FormatItalic";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import Check from "@mui/icons-material/Check";
 
 export default function Details() {
-
   const [italic, setItalic] = React.useState(false);
-  const [fontWeight, setFontWeight] = React.useState('normal');
+  const [fontWeight, setFontWeight] = React.useState("normal");
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const [value, setValue] = React.useState(1);
+  const [rateValue, setValue] = React.useState(0);
 
   const images = [
     "data:image/jpeg;base64,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",
@@ -74,92 +71,101 @@ export default function Details() {
       <div style={{ display: "flex", justifyContent: "center" }}>
         <YouTube videoId="AWl3WBAU4h8" opts={{ width: "560", height: "315" }} />
       </div>
-      <div style={{ display: "flex", justifyContent: "center" ,padding:"2rem 0 0 0"}}>
-      <FormControl>
-      <FormLabel>Your comment</FormLabel>
-      <Textarea
-        placeholder="Type something here…"
-        minRows={3}
-        endDecorator={
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 'var(--Textarea-paddingBlock)',
-              pt: 'var(--Textarea-paddingBlock)',
-              borderTop: '1px solid',
-              borderColor: 'divider',
-              flex: 'auto',
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "1rem" }}
+      >
+        <Box
+          sx={{
+            "& > legend": { mt: 2 },
+          }}
+        >
+          <Typography component="legend">Rating</Typography>
+          <Rating
+            name="rating"
+            value={rateValue}
+            onChange={(event, newValue) => {
+              setValue(newValue);
             }}
-          >
-            <IconButton
-              variant="plain"
-              color="neutral"
-              onClick={(event) => setAnchorEl(event.currentTarget)}
-            >
-              <FormatBold />
-              <KeyboardArrowDown fontSize="md" />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)}
-              size="sm"
-              placement="bottom-start"
-              sx={{ '--ListItemDecorator-size': '24px' }}
-            >
-              {['200', 'normal', 'bold'].map((weight) => (
-                <MenuItem
-                  key={weight}
-                  selected={fontWeight === weight}
-                  onClick={() => {
-                    setFontWeight(weight);
-                    setAnchorEl(null);
+          />
+        </Box>
+      </div>
+      {rateValue !== 0 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "2rem 0 0 0",
+          }}
+        >
+          <FormControl>
+            <FormLabel>Your comment</FormLabel>
+            <Textarea
+              placeholder="Type something here…"
+              minRows={3}
+              endDecorator={
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "var(--Textarea-paddingBlock)",
+                    pt: "var(--Textarea-paddingBlock)",
+                    borderTop: "1px solid",
+                    borderColor: "divider",
+                    flex: "auto",
                   }}
-                  sx={{ fontWeight: weight }}
                 >
-                  <ListItemDecorator>
-                    {fontWeight === weight && <Check fontSize="sm" />}
-                  </ListItemDecorator>
-                  {weight === '200' ? 'lighter' : weight}
-                </MenuItem>
-              ))}
-            </Menu>
-            <IconButton
-              variant={italic ? 'soft' : 'plain'}
-              color={italic ? 'primary' : 'neutral'}
-              aria-pressed={italic}
-              onClick={() => setItalic((bool) => !bool)}
-            >
-              <FormatItalic />
-            </IconButton>
-            <Button sx={{ ml: 'auto' }}>Send</Button>
-          </Box>
-        }
-        sx={{
-          minWidth: 560,
-          fontWeight,
-          fontStyle: italic ? 'italic' : 'initial',
-        }}
-      />
-    </FormControl>
-      </div>
-      <div style={{ display: "flex", justifyContent: "center" ,padding:"1rem"}}>
-        
-      <Box
-      sx={{
-        '& > legend': { mt: 2 },
-      }}
-    >
-      <Typography component="legend">Rating</Typography>
-      <Rating
-        name="rating"
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-      />
-    </Box>
-      </div>
+                  <IconButton
+                    variant="plain"
+                    color="neutral"
+                    onClick={(event) => setAnchorEl(event.currentTarget)}
+                  >
+                    <FormatBold />
+                    <KeyboardArrowDown fontSize="md" />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}
+                    size="sm"
+                    placement="bottom-start"
+                    sx={{ "--ListItemDecorator-size": "24px" }}
+                  >
+                    {["200", "normal", "bold"].map((weight) => (
+                      <MenuItem
+                        key={weight}
+                        selected={fontWeight === weight}
+                        onClick={() => {
+                          setFontWeight(weight);
+                          setAnchorEl(null);
+                        }}
+                        sx={{ fontWeight: weight }}
+                      >
+                        <ListItemDecorator>
+                          {fontWeight === weight && <Check fontSize="sm" />}
+                        </ListItemDecorator>
+                        {weight === "200" ? "lighter" : weight}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                  <IconButton
+                    variant={italic ? "soft" : "plain"}
+                    color={italic ? "primary" : "neutral"}
+                    aria-pressed={italic}
+                    onClick={() => setItalic((bool) => !bool)}
+                  >
+                    <FormatItalic />
+                  </IconButton>
+                  <Button sx={{ ml: "auto" }}>Send</Button>
+                </Box>
+              }
+              sx={{
+                minWidth: 560,
+                fontWeight,
+                fontStyle: italic ? "italic" : "initial",
+              }}
+            />
+          </FormControl>
+        </div>
+      )}
     </div>
   );
 }
