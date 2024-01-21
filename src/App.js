@@ -1,43 +1,24 @@
-import React from 'react';
-import { Box } from '@mui/material';
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import { Route, Routes } from 'react-router-dom';
-
-import { ColorModeContext, useMode } from "./theme";
-
-import TopBar from './Components/TopBar';
-import SideNavigationPanel from './Components/SideNavigationPanel';
-
+import Layout from './Layout';
 import { AppRoutes } from './Data/AppRoutes';
-import { SideNavigationPanelData } from './Data/SideNavigationPanelData';
+import Missing from './Pages/Missing/Missing';
 
-function App() {
-  const [theme, colorMode] = useMode();
 
+export default function App() {
   let routes = [];
   Object.keys(AppRoutes).forEach((name) => {
     routes.push(AppRoutes[name]);
   });
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box className='app' sx={{ display: 'flex' }}>
-          <main className='content' style={{ display: 'flex' }}>
-            <TopBar drawerWidth={SideNavigationPanelData.width} />
-            <SideNavigationPanel SideNavigationPanelMenuItems={SideNavigationPanelData.items} drawerWidth={SideNavigationPanelData.width} />
-            <Routes>
-              {routes.map((route, index) => (
-                <Route key={index} path={route.path} element={route.component} />
-              ))}
-            </Routes>
-          </main>
-        </Box>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <Routes>
+      <Route path='/' element={<Layout />}>
+        {routes.map((route) => (
+          <Route key={route} path={route.path} element={route.component} />
+        ))}
+
+        <Route path='*' element={<Missing />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;
