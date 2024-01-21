@@ -136,7 +136,7 @@ export default function Details() {
           </Box>
         }
         sx={{
-          minWidth: 300,
+          minWidth: 560,
           fontWeight,
           fontStyle: italic ? 'italic' : 'initial',
         }}
