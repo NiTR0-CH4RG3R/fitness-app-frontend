@@ -79,7 +79,12 @@ export default function Details() {
             "& > legend": { mt: 2 },
           }}
         >
-          <Typography component="legend">Rating</Typography>
+          <Typography
+            component="legend"
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
+            Rating
+          </Typography>
           <Rating
             name="rating"
             value={rateValue}
