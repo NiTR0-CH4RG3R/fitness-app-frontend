@@ -6,8 +6,11 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { useNavigate } from 'react-router-dom';
 
-export default function ExercisesCard({imagelink,title,content}) {
+export default function ExercisesCard({imagelink,title,content,id}) {
+
+  const navi=useNavigate();
   return (
     <div>
          <Card sx={{ Width: "100%" }}>
@@ -21,7 +24,7 @@ export default function ExercisesCard({imagelink,title,content}) {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">Learn More</Button>
+                <Button size="small" onClick={navi(`/details/${id}`)}>Learn More</Button>
               </CardActions>
             </Card>
       
