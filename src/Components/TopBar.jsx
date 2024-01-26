@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 import { ArrowBack, Notifications, Brightness4, AccountCircle } from '@mui/icons-material';
 
-export default function TopBar({ drawerWidth = 254 }) {
+export default function TopBar({ drawerWidth = 254, topBarHeight = 80 }) {
     const colorMode = useContext(ColorModeContext);
 
     // [TODO] : Implement back button
@@ -14,12 +14,15 @@ export default function TopBar({ drawerWidth = 254 }) {
     return (
         <AppBar
             position='fixed'
+
             sx={{
                 width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,
+                height: topBarHeight,
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: backButtonVisible ? 'space-between' : 'flex-end',
                 p: 2,
+
             }}>
 
             {/* Back Button */}

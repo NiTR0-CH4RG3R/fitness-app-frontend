@@ -9,7 +9,7 @@ import Toolbar from '@mui/material/Toolbar';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function SideNavigationPanel({ SideNavigationPanelMenuItems = [], drawerWidth = 254 }) {
+export default function SideNavigationPanel({ SideNavigationPanelMenuItems = [], drawerWidth = 254, toolbarHeight = 80 }) {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -34,7 +34,11 @@ export default function SideNavigationPanel({ SideNavigationPanelMenuItems = [],
 
             }}
         >
-            <Toolbar />
+            <Toolbar
+                sx={{
+                    height: toolbarHeight
+                }}
+            />
             <Box sx={{ overflow: 'auto' }}>
                 <List>
                     {SideNavigationPanelMenuItems.map((item) => (

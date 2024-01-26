@@ -17,9 +17,19 @@ export default function Layout() {
                 <CssBaseline />
                 <Box className='app' sx={{ display: 'flex' }}>
                     <main className='content' style={{ display: 'flex' }}>
-                        <TopBar drawerWidth={SideNavigationPanelData.width} />
-                        <SideNavigationPanel SideNavigationPanelMenuItems={SideNavigationPanelData.items} drawerWidth={SideNavigationPanelData.width} />
-                        <Outlet />
+                        <SideNavigationPanel SideNavigationPanelMenuItems={SideNavigationPanelData.items} drawerWidth={SideNavigationPanelData.width} toolbarHeight={SideNavigationPanelData.toolbarHeight} />
+                        <TopBar drawerWidth={SideNavigationPanelData.width} topBarHeight={SideNavigationPanelData.toolbarHeight} />
+                        <Box
+                            display='flex'
+                            width={`calc(100% - ${SideNavigationPanelData.width}px)`}
+                            // ml={`${SideNavigationPanelData.width}px`}
+                            height={`calc(100% - ${SideNavigationPanelData.toolbarHeight}px)`}
+                            mt={`${SideNavigationPanelData.toolbarHeight}px`}
+                            justifyContent='center'
+                            alignItems='center'
+                        >
+                            <Outlet />
+                        </Box>
                     </main>
                 </Box>
             </ThemeProvider>

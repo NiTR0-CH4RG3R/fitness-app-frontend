@@ -4,6 +4,7 @@ import { AppRoutes } from './AppRoutes';
 
 export const SideNavigationPanelData = {
     width: 300,
+    toolbarHeight: 80,
     items: [
         {
             title: { primary: 'Dashboard', secondary: 'You can find quick link to everythin here!' },
