@@ -39,13 +39,7 @@ export default function ExerciseList() {
     const exerciseList = sample.slice((page - 1) * cardsPerPage, page * cardsPerPage);
 
     return (
-        <Box
-            width='100%'
-            display='flex'
-            justifyContent='center'
-            alignItems='center'
-            flexDirection='column'
-        >
+        <>
             {/* [INFO] Here I have given a very higher value to the zIndex. If we are doing things correctly we should return a value from material ui. Also maybe we should move the zIndex to the SearchBar component. Let's do it if we were to use this in another place*/}
             <SearchBar outerBoxProps={{ position: 'fixed', top: '10%', zIndex: 2000 }} />
 
@@ -78,6 +72,6 @@ export default function ExerciseList() {
                 <Pagination page={page} count={pageCount} onChange={(_, p) => { setPage(p); }} />
             </Box>
 
-        </Box>
+        </>
     );
 }
