@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AppRoutes } from '../../Data/AppRoutes';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
@@ -38,21 +40,38 @@ export default function ExerciseList() {
     // [TODO] : Replace this with a call to the backend
     const exerciseList = sample.slice((page - 1) * cardsPerPage, page * cardsPerPage);
 
+    const navigate = useNavigate();
+
     return (
         <>
             {/* [INFO] Here I have given a very higher value to the zIndex. If we are doing things correctly we should return a value from material ui. Also maybe we should move the zIndex to the SearchBar component. Let's do it if we were to use this in another place*/}
-            <SearchBar outerBoxProps={{ position: 'fixed', top: '10%', zIndex: 2000 }} />
+            <Box
+                position='fixed'
+                top='12%'
+                display='flex'
+                width='100%'
+                height='content-fit'
+                justifyContent='center'
+                alignItems='center'
+                zIndex={1000}
+            >
+                <SearchBar outerBoxProps={{}} />
+            </Box>
 
             <Grid
                 container
-                spacing={5}
+                spacing={3}
                 direction='row'
                 justifyContent='center'
                 alignItems='center'
+                width='100%'
+                height='90%'
+                overflow='auto'
+                xs='auto'
             >
                 {exerciseList.map((card, index) => (
-                    <Grid item xs='auto' key={index}>
-                        <MediaCard title={card.title} image={card.image} description={card.description} />
+                    <Grid item key={index} >
+                        <MediaCard title={card.title} image={card.image} description={card.description} onClick={(e) => { navigate(AppRoutes.exercise.path); }} />
                     </Grid>
                 ))}
                 {/* <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -66,8 +85,8 @@ export default function ExerciseList() {
                 justifyContent='center'
                 alignItems='center'
                 position='fixed'
-                bottom={0}
-                padding={4}
+                bottom='1%'
+                padding={0}
             >
                 <Pagination page={page} count={pageCount} onChange={(_, p) => { setPage(p); }} />
             </Box>
