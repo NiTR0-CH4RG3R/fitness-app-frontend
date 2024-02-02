@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Box, IconButton, AppBar } from '@mui/material';
+import { Paper, IconButton, Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { ColorModeContext } from '../theme';
 import { useContext } from 'react';
 
@@ -7,23 +8,24 @@ import { ArrowBack, Notifications, Brightness4, AccountCircle } from '@mui/icons
 
 export default function TopBar({ drawerWidth = 254, topBarHeight = 80 }) {
     const colorMode = useContext(ColorModeContext);
-
+    const theme = useTheme();
     // [TODO] : Implement back button
     const [backButtonVisible, setBackButtonVisible] = useState(false);
 
     return (
-        <AppBar
-            position='fixed'
-
+        <Paper
+            elevation={4}
             sx={{
-                width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,
-                height: topBarHeight,
+                backgroundColor: theme.palette.mode === 'dark' ? 'background.paper' : 'primary.main',
+                position: 'fixed',
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: backButtonVisible ? 'space-between' : 'flex-end',
+                width: `calc(100% - ${drawerWidth}px)`,
+                height: topBarHeight,
                 p: 2,
-
-            }}>
+            }}
+        >
 
             {/* Back Button */}
             <IconButton type='button' sx={{ color: 'grey.50', p: 1, display: (!backButtonVisible && 'none') }}>
@@ -42,6 +44,6 @@ export default function TopBar({ drawerWidth = 254, topBarHeight = 80 }) {
                     <AccountCircle />
                 </IconButton>
             </Box>
-        </AppBar>
+        </Paper>
     );
 }
