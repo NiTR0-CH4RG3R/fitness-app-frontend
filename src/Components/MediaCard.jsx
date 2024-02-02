@@ -10,11 +10,13 @@ import Typography from '@mui/material/Typography';
  * https://mui.com/material-ui/react-card/
  */
 
-export default function MediaCard({ title, description, image }) {
+export default function MediaCard({ title, description, image, onClick }) {
     return (
-        <Card sx={{ maxWidth: 345, borderRadius: 2 }} raised>
+        <Card sx={{ maxWidth: 300, borderRadius: 2, height: '40%', maxHeight: 300 }} raised>
             <CardMedia
-                sx={{ height: 140 }}
+                sx={{
+                    height: 100
+                }}
                 image={image}
                 title={title}
             />
@@ -23,7 +25,7 @@ export default function MediaCard({ title, description, image }) {
                 <Typography variant="body2" color="text.secondary">{description}</Typography>
             </CardContent>
             <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button size="small">Learn More</Button>
+                <Button size="small" onClick={onClick}>Learn More</Button>
             </CardActions>
         </Card>
     );
