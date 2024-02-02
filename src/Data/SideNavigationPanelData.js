@@ -3,7 +3,7 @@ import * as MuiIcons from '@mui/icons-material';
 import { AppRoutes } from './AppRoutes';
 
 export const SideNavigationPanelData = {
-    width: 300,
+    width: 240,
     toolbarHeight: 80,
     items: [
         {
