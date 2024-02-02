@@ -6,7 +6,6 @@ import WorkoutPlanList from "../Pages/WorkoutPlan/WorkoutPlanList";
 
 export const AppRoutes = {
     dashboard: { path: '/dashboard', component: <Dashboard /> },
-    login: { path: '/login', component: (<></>) },
     exercise_list: { path: '/exercise/list', component: <ExerciseList /> },
     exercise: { path: '/exercise/id', component: <Exercise /> },
     workout_plan: { path: '/workout/list', component: <WorkoutPlanList /> },
