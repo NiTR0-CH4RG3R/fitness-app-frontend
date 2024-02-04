@@ -13,10 +13,10 @@ import TablePagination from '@mui/material/TablePagination';
 import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add';
-import WorkoutPlanAddDialog from "../WorkoutPlan/WorkoutPlanAddDialog";
-import WorkoutPlanEditDialog from "../WorkoutPlan/WorkoutPlanEditDialog";
-import WorkoutPlanDeleteDialog from '../WorkoutPlan/WorkoutPlanDeleteDialog';
-
+import UserAddDialog from "../User/UserAddDialog";
+import UserPromoteDialog from "./UserPromoteDialog";
+import UserDeleteDialog from '../User/UserDeleteDialog';
+import UserViewDialog from '../User/UserViewDialog';
 const columns = [
     { id: 'name', label: 'Name', minWidth: 170, align: 'left' },
     { id: 'addedDate', label: 'Added Date', minWidth: 100 },
@@ -35,23 +35,26 @@ export default function UserList() {
     const [mode, setMode] = useState('private');
 
     const [isConfirm, setIsConfirm] = useState(false);
-    const [isEditModal, setIsEditModal] = useState(false);
+    const [isPromoteModal, setIsPromoteModal] = useState(false);
     const [isAddModal, setIsAddModal] = useState(false);
+    //VIEW MODAL    
+    const [isViewModal, setIsViewModal] = useState(false);
+
 
     useEffect(() => {
         if (mode === 'private') {
             setRows([
                 {
-                    id: 0, name: 'Yo Yo Diet', duration: 7, createdBy: 'Yo Yo Man', createdDate: Date.now().toLocaleString(), action: (
+                    id: 0, name: 'Yo Diet', duration: 7, createdBy: 'Yo Yo Man', createdDate: Date.now().toLocaleString(), action: (
                         // <Box display='flex' width='fit-content' height='fit-content' justifyContent='center' alignItems='center'>
                         //     <Button variant='contained' color='success' sx={{ m: 0.3 }}> Follow </Button>
                         //     <Button variant='contained' color='primary' sx={{ m: 0.3 }}> Edit </Button>
                         //     <Button variant='contained' color='error' sx={{ m: 0.3 }}> Delete </Button>
                         // </Box>
                         <>
-                            <Button variant='contained' color='success' sx={{ m: 0.3 }}> Follow </Button>
-                            <Button variant='contained' color='primary' sx={{ m: 0.3 }} onClick={() => setIsEditModal(true)}> Edit </Button>
-                            <Button variant='contained' color='error' sx={{ m: 0.3 }} onClick={() => setIsConfirm(true)}> Delete </Button>
+                            <Button variant='contained' color='success' sx={{ m: 0.3 }} onClick={() => setIsPromoteModal(true)}> Promote </Button>
+                            <Button variant='contained' color='error' sx={{ m: 0.3 }} onClick={() => setIsConfirm(true)}> Remove </Button>
+                            <Button variant='contained' color='primary' sx={{ m: 0.3 }} onClick={() => setIsViewModal(true)}> View Details </Button>
                         </>
                     )
                 },
@@ -94,7 +97,7 @@ export default function UserList() {
                 <AddIcon sx={{ mr: 1 }} />
                 Add
             </Fab>
-
+{/*
             <ToggleButtonGroup
                 color="primary"
                 value={mode}
@@ -106,10 +109,11 @@ export default function UserList() {
                 }}
 
             >
-                <ToggleButton value="private">Private</ToggleButton>
-                <ToggleButton value="public">Public</ToggleButton>
+             <ToggleButton value="private">Private</ToggleButton>
+             <ToggleButton value="public">Public</ToggleButton>
+                       
             </ToggleButtonGroup>
-
+*/}  
             <Paper elevation={4} sx={{ minWidth: '100%', maxHeight: '90%' }}>
 
                 <TableContainer sx={{ maxHeight: '90%' }}>
@@ -156,10 +160,9 @@ export default function UserList() {
                 </TableContainer>
                 <TablePagination component="div" />
             </Paper>
-            <WorkoutPlanAddDialog isOpen={isAddModal} onClose={() => setIsAddModal(false)} />
-            <WorkoutPlanEditDialog isOpen={isEditModal} onClose={() => setIsEditModal(false)} />
-            <WorkoutPlanDeleteDialog isOpen={isConfirm} onClose={() => setIsConfirm(false)} />
-
+            <UserPromoteDialog isOpen={isPromoteModal} onClose={() => setIsPromoteModal(false)} />
+            <UserDeleteDialog isOpen={isConfirm} onClose={() => setIsConfirm(false)} />
+            <UserViewDialog isOpen={isViewModal} onClose={() => setIsViewModal(false)} />                
         </Box>
     );
 }

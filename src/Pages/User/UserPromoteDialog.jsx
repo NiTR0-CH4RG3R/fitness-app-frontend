@@ -4,6 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import DialogContentText from "@mui/material/DialogContentText";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
@@ -23,41 +24,23 @@ export default function UserEditDialog({ isOpen, onSubmit, onClose }) {
                     onSubmit(Object.fromEntries(formData));
                 },
             }}
+
         >
-            <DialogTitle>Edit Plan</DialogTitle>
+            <DialogTitle>
+            Confirm to Prmote as Admin?
+            </DialogTitle>
             <DialogContent>
-                <TextField
-                    fullWidth
-                    id="outlined-basic"
-                    label="Name"
-                    variant="outlined"
-                    sx={{ marginTop: "1.25rem" }}
-                    InputLabelProps={{ shrink: true }}
-                    name="name"
-                />
-                <TextField
-                    fullWidth
-                    id="outlined-basic"
-                    label="Duration (in Days)"
-                    variant="outlined"
-                    sx={{ marginTop: "1.25rem" }}
-                    InputLabelProps={{ shrink: true }}
-                    name="duration"
-                />
-
-
-
-                <FormControlLabel
-                    control={
-                        <Switch checked={isPublic} onChange={() => { setIsPublic(!isPublic) }} name="isPublic" />
-                    }
-                    label="Is Public"
-                    labelPlacement="start"
-                />
+                <DialogContentText>
+                Are you sure, you need to promote this User?
+                </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Submit</Button>
+                <Button autoFocus onClick={onClose}>
+                    Close
+                </Button>
+                <Button type='submit'>
+                    Promote
+                </Button>
             </DialogActions>
         </Dialog>
     )

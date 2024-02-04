@@ -30,20 +30,20 @@ export default function UserAddDialog({ isOpen, onSubmit, onClose }) {
                 <TextField
                     fullWidth
                     id="outlined-basic"
-                    label="Name"
+                    label="First Name"
                     variant="outlined"
                     sx={{ marginTop: "1.25rem" }}
                     InputLabelProps={{ shrink: true }}
-                    name="name"
+                    name="first_name"
                 />
                 <TextField
                     fullWidth
                     id="outlined-basic"
-                    label="Duration (in Days)"
+                    label="Last Name"
                     variant="outlined"
                     sx={{ marginTop: "1.25rem" }}
                     InputLabelProps={{ shrink: true }}
-                    name="duration"
+                    name="last_name"
                 />
 
 
