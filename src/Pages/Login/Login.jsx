@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, Navigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "../../Auth/Auth";
 import { AppRoutes } from "../../Data/AppRoutes";
 import axios from '../../api/axios';
@@ -125,6 +125,14 @@ export default function Login() {
           <Button type='reset' variant='outlined' color='error' sx={{ mr: 2 }}> Clear </Button>
           <Button type='submit' variant='contained' color='info'> Login </Button>
         </Box>
+
+        <Typography variant='body2' sx={{ mt: 4 }}>
+          Don't have an account?
+          <Button onClick={(e) => {
+            e.preventDefault();
+            navigate('/register', { replace: true });
+          }} sx={{ ml: 1 }}> Register </Button>
+        </Typography>
 
       </Box>
     </Box>

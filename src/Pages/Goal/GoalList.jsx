@@ -40,6 +40,8 @@ export default function GoalList() {
         },
     ]);
 
+
+
     const [id, setId] = useState(0);
     const [isConfirm, setIsConfirm] = useState(false);
     const [isEditModal, setIsEditModal] = useState(false);

@@ -7,22 +7,45 @@ import { SideNavigationPanelData } from './Data/SideNavigationPanelData';
 
 export default function Layout() {
     return (
-        <Box className='app' sx={{ display: 'flex' }}>
-            <main className='content' style={{ display: 'flex' }}>
+        <Box
+            className='app'
+            width='100vw'
+            height='100vh'
+        >
+            <main
+                className='content'
+                style={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                }}
+            >
                 <SideNavigationPanel SideNavigationPanelMenuItems={SideNavigationPanelData.items} drawerWidth={SideNavigationPanelData.width} toolbarHeight={SideNavigationPanelData.toolbarHeight} />
 
-                <Box display='flex' flexDirection='column' width='100%'>
-                    <TopBar drawerWidth={SideNavigationPanelData.width} topBarHeight={SideNavigationPanelData.toolbarHeight} />
+                <Box
+                    display='flex'
+                    flexDirection='column'
+                    width='100%'
+                    height='100%'
+                >
+                    <TopBar
+                        drawerWidth={SideNavigationPanelData.width}
+                        topBarHeight={SideNavigationPanelData.toolbarHeight}
+                    />
                     <Box
-                        display='flex'
-                        flexDirection='column'
                         width='100%'
                         height={`calc(100% - ${SideNavigationPanelData.toolbarHeight}px)`}
-                        mt={`${SideNavigationPanelData.toolbarHeight}px`}
-                        justifyContent='center'
-                        alignItems='center'
+                        overflow='auto'
                     >
-                        <Outlet />
+                        <Box
+                            display='flex'
+                            flexDirection='column'
+                            width='100%'
+                            alignItems='center'
+                            p={7}
+                        >
+                            <Outlet />
+                        </Box>
                     </Box>
                 </Box>
             </main>

@@ -14,14 +14,13 @@ export default function TopBar({ drawerWidth = 254, topBarHeight = 80 }) {
 
     return (
         <Paper
-            elevation={4}
+            elevation={5}
             sx={{
                 backgroundColor: theme.palette.mode === 'dark' ? 'background.paper' : 'primary.main',
-                position: 'fixed',
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: backButtonVisible ? 'space-between' : 'flex-end',
-                width: `calc(100% - ${drawerWidth}px)`,
+                width: `100%`,
                 height: topBarHeight,
                 p: 2,
             }}

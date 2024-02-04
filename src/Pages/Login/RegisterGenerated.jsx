@@ -4,6 +4,11 @@ import { Button, TextField, MenuItem, Grid, Box, Paper } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import * as Yup from 'yup';
+import axios from '../../api/axios';
+import { useAuthContext } from '../../Auth/Auth';
+import { useNavigate, Link, useLocation } from "react-router-dom";
+
+const REGISTER_URL = '/register';
 
 const validationSchema = Yup.object({
     firstName: Yup.string().required('First Name is required'),
@@ -22,250 +27,323 @@ const validationSchema = Yup.object({
 });
 
 export default function RegisterGenerated() {
+
+    const { setAuth } = useAuthContext();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location?.state?.from || '/';
+
     return (
-        <Box width='70%' height='fit-content' p={7}>
-            <Formik
-                initialValues={{
-                    firstName: '',
-                    lastName: '',
-                    email: '',
-                    password: '',
-                    confirmPassword: '',
-                    dob: null,
-                    phoneNumber: '',
-                    address: '',
-                    weight: '',
-                    bloodGroup: '',
-                    healthIssues: '',
-                    emergencyContact: '',
-                }}
-                validationSchema={validationSchema}
-                onSubmit={(values, { setSubmitting }) => {
-                    setTimeout(() => {
-                        setSubmitting(false);
-                        alert(JSON.stringify(values, null, 2));
-                    }, 500);
+        <Box
+            display='flex'
+            justifyContent='center'
+            alignItems='center'
+            height='100%'
+            width='100%'
+        >
+            <Paper
+                elevation={4}
+                sx={{
+                    padding: 2,
+                    width: '100%',
+                    maxWidth: 500
                 }}
             >
-                {({ handleSubmit, isSubmitting, setFieldValue, values, touched, errors, resetForm }) => (
-                    <Form onSubmit={handleSubmit} onReset={resetForm}>
-                        <Grid container rowSpacing={1}>
-                            <Grid item xs={12} sm={6}>
-                                <Field
-                                    name="firstName"
-                                    as={TextField}
-                                    label="First Name"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="firstName"
-                                    value={values.firstName}
-                                    error={touched.firstName && Boolean(errors.firstName)}
-                                    helperText={touched.firstName && errors.firstName}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Field
-                                    name="lastName"
-                                    as={TextField}
-                                    label="Last Name"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="lastName"
-                                    value={values.lastName}
-                                    error={touched.lastName && Boolean(errors.lastName)}
-                                    helperText={touched.lastName && errors.lastName}
+                <Formik
+                    initialValues={{
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        password: '',
+                        confirmPassword: '',
+                        dob: null,
+                        phoneNumber: '',
+                        address: '',
+                        weight: '',
+                        bloodGroup: '',
+                        healthIssues: '',
+                        emergencyContact: '',
+                    }}
+                    validationSchema={validationSchema}
+                    onSubmit={async (values, { setSubmitting }) => {
+                        try {
+                            setSubmitting(true);
+                            const response = await axios.post(REGISTER_URL,
+                                JSON.stringify(values),
+                                {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    withCredentials: true
+                                });
 
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name="email"
-                                    type="email"
-                                    as={TextField}
-                                    label="Email"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="email"
-                                    value={values.email}
-                                    error={touched.email && Boolean(errors.email)}
-                                    helperText={touched.email && errors.email}
+                            const user = response?.data?.id;
+                            const accessToken = response?.data?.accessToken;
+                            const roles = response?.data?.roles;
+                            const email = values.email;
 
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Field
-                                    name="password"
-                                    type="password"
-                                    as={TextField}
-                                    label="Password"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="password"
-                                    value={values.password}
-                                    error={touched.password && Boolean(errors.password)}
-                                    helperText={touched.password && errors.password}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Field
-                                    name="confirmPassword"
-                                    type="password"
-                                    as={TextField}
-                                    label="Confirm Password"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="confirmPassword"
-                                    value={values.confirmPassword}
-                                    error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-                                    helperText={touched.confirmPassword && errors.confirmPassword}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            setAuth({ user, email, accessToken, roles });
+                            navigate(from, { replace: true });
+
+                        }
+                        catch (error) {
+                            setSubmitting(false);
+                            if (!error?.response) {
+                                console.log('Network Error');
+                                return;
+                            }
+
+                            switch (error?.response?.status) {
+                                case 401:
+                                    console.log('Unauthorized');
+                                    break;
+                                case 403:
+                                    console.log('Forbidden');
+                                    break;
+                                case 404:
+                                    console.log('Not Found');
+                                    break;
+                                default:
+                                    console.log('Unknown Error');
+                            }
+                        }
+                    }}
+                >
+                    {({ handleSubmit, isSubmitting, setFieldValue, values, touched, errors, resetForm }) => (
+                        <Form onSubmit={handleSubmit} onReset={resetForm}>
+                            <Grid container sx={{
+                                '& .MuiGrid-item': {
+                                    padding: 1
+                                }
+                            }}>
+                                <Grid item xs={12} sm={6}>
                                     <Field
-                                        name="dob"
-                                        as={DatePicker}
-                                        slotProps={{ textField: { variant: 'filled', size: 'small', fullWidth: true } }}
-                                        label="Date of Birth"
-                                        id="dob"
-                                        onChange={(value) => setFieldValue('dob', value)}
-                                        value={values.dob}
-                                        error={touched.dob && Boolean(errors.dob)}
-                                        helperText={touched.dob && errors.dob}
+                                        required
+                                        name="firstName"
+                                        as={TextField}
+                                        label="First Name"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="firstName"
+                                        value={values.firstName}
+                                        error={touched.firstName && Boolean(errors.firstName)}
+                                        helperText={touched.firstName && errors.firstName}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Field
+                                        required
+                                        name="lastName"
+                                        as={TextField}
+                                        label="Last Name"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="lastName"
+                                        value={values.lastName}
+                                        error={touched.lastName && Boolean(errors.lastName)}
+                                        helperText={touched.lastName && errors.lastName}
 
                                     />
-                                </LocalizationProvider>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Field
-                                    name="phoneNumber"
-                                    as={TextField}
-                                    label="Phone Number"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="phonenumber"
-                                    type="tel"
-                                    value={values.phonenumber}
-                                    error={touched.phonenumber && Boolean(errors.phonenumber)}
-                                    helperText={touched.phonenumber && errors.phonenumber}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <Field
-                                    name="address"
-                                    as={TextField}
-                                    label="Address"
-                                    multiline
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="address"
-                                    value={values.address}
-                                    error={touched.address && Boolean(errors.address)}
-                                    helperText={touched.address && errors.address}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Field
-                                    name="weight"
-                                    type="text"
-                                    as={TextField}
-                                    label="Weight"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="weight"
-                                    value={values.weight}
-                                    error={touched.weight && Boolean(errors.weight)}
-                                    helperText={touched.weight && errors.weight}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Field
-                                    name="bloodGroup"
-                                    label="Blood Group"
-                                    as={TextField}
-                                    select
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="bloodGroup"
-                                    value={values.bloodGroup}
-                                    error={touched.bloodGroup && Boolean(errors.bloodGroup)}
-                                    helperText={touched.bloodGroup && errors.bloodGroup}
-                                >
-                                    <MenuItem value=""><em>None</em></MenuItem>
-                                    <MenuItem value={'A+'}>A+</MenuItem>
-                                    <MenuItem value={'A-'}>A-</MenuItem>
-                                    <MenuItem value={'B+'}>B+</MenuItem>
-                                    <MenuItem value={'B-'}>B-</MenuItem>
-                                    <MenuItem value={'O+'}>O+</MenuItem>
-                                    <MenuItem value={'O-'}>O-</MenuItem>
-                                    <MenuItem value={'AB+'}>AB+</MenuItem>
-                                    <MenuItem value={'AB-'}>AB-</MenuItem>
-                                </Field>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name="healthIssues"
-                                    as={TextField}
-                                    label="Health Issues"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="healthIssues"
-                                    value={values.healthIssues}
-                                    error={touched.healthIssues && Boolean(errors.healthIssues)}
-                                    helperText={touched.healthIssues && errors.healthIssues}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name="emergencyContact"
-                                    as={TextField}
-                                    label="Emergency Contact"
-                                    fullWidth
-                                    variant='filled'
-                                    size='small'
-                                    id="emergencyContact"
-                                    value={values.emergencyContact}
-                                    error={touched.emergencyContact && Boolean(errors.emergencyContact)}
-                                    helperText={touched.emergencyContact && errors.emergencyContact}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Field
+                                        required
+                                        name="email"
+                                        type="email"
+                                        as={TextField}
+                                        label="Email"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="email"
+                                        value={values.email}
+                                        error={touched.email && Boolean(errors.email)}
+                                        helperText={touched.email && errors.email}
+
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Field
+                                        required
+                                        name="password"
+                                        type="password"
+                                        as={TextField}
+                                        label="Password"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="password"
+                                        value={values.password}
+                                        error={touched.password && Boolean(errors.password)}
+                                        helperText={touched.password && errors.password}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Field
+                                        required
+                                        name="confirmPassword"
+                                        type="password"
+                                        as={TextField}
+                                        label="Confirm Password"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="confirmPassword"
+                                        value={values.confirmPassword}
+                                        error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                                        helperText={touched.confirmPassword && errors.confirmPassword}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <Field
+                                            required
+                                            name="dob"
+                                            as={DatePicker}
+                                            slotProps={{ textField: { variant: 'filled', size: 'small', fullWidth: true } }}
+                                            label="Date of Birth"
+                                            id="dob"
+                                            onChange={(value) => setFieldValue('dob', value)}
+                                            value={values.dob}
+                                            error={touched.dob && Boolean(errors.dob)}
+                                            helperText={touched.dob && errors.dob}
+
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Field
+                                        required
+                                        name="phoneNumber"
+                                        as={TextField}
+                                        label="Phone Number"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="phonenumber"
+                                        type="tel"
+                                        value={values.phoneNumber}
+                                        error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+                                        helperText={touched.phoneNumber && errors.phoneNumber}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Field
+                                        required
+                                        name="address"
+                                        as={TextField}
+                                        label="Address"
+                                        multiline
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="address"
+                                        value={values.address}
+                                        error={touched.address && Boolean(errors.address)}
+                                        helperText={touched.address && errors.address}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Field
+                                        required
+                                        name="weight"
+                                        type="text"
+                                        as={TextField}
+                                        label="Weight"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="weight"
+                                        value={values.weight}
+                                        error={touched.weight && Boolean(errors.weight)}
+                                        helperText={touched.weight && errors.weight}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Field
+                                        required
+                                        name="bloodGroup"
+                                        label="Blood Group"
+                                        as={TextField}
+                                        select
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="bloodGroup"
+                                        value={values.bloodGroup}
+                                        error={touched.bloodGroup && Boolean(errors.bloodGroup)}
+                                        helperText={touched.bloodGroup && errors.bloodGroup}
+                                    >
+                                        <MenuItem value=""><em>None</em></MenuItem>
+                                        <MenuItem value={'A+'}>A+</MenuItem>
+                                        <MenuItem value={'A-'}>A-</MenuItem>
+                                        <MenuItem value={'B+'}>B+</MenuItem>
+                                        <MenuItem value={'B-'}>B-</MenuItem>
+                                        <MenuItem value={'O+'}>O+</MenuItem>
+                                        <MenuItem value={'O-'}>O-</MenuItem>
+                                        <MenuItem value={'AB+'}>AB+</MenuItem>
+                                        <MenuItem value={'AB-'}>AB-</MenuItem>
+                                    </Field>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Field
+                                        name="healthIssues"
+                                        as={TextField}
+                                        label="Health Issues"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="healthIssues"
+                                        value={values.healthIssues}
+                                        error={touched.healthIssues && Boolean(errors.healthIssues)}
+                                        helperText={touched.healthIssues && errors.healthIssues}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Field
+                                        required
+                                        name="emergencyContact"
+                                        as={TextField}
+                                        label="Emergency Contact"
+                                        fullWidth
+                                        variant='filled'
+                                        size='small'
+                                        id="emergencyContact"
+                                        value={values.emergencyContact}
+                                        error={touched.emergencyContact && Boolean(errors.emergencyContact)}
+                                        helperText={touched.emergencyContact && errors.emergencyContact}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+
+                                </Grid>
+                                <Grid display='flex' item xs={6} justifyContent='end'>
+                                    <Button
+                                        color="warning"
+                                        variant="contained"
+                                        size='large'
+                                        type="reset"
+                                        sx={{ mr: 1 }}
+                                    >
+                                        Reset
+                                    </Button>
+                                    <Button
+                                        color="primary"
+                                        variant="contained"
+                                        type="submit"
+                                        size='large'
+                                    >
+                                        Submit
+                                    </Button>
+                                </Grid>
 
                             </Grid>
-                            <Grid display='flex' item xs={6} justifyContent='end'>
-                                <Button
-                                    color="warning"
-                                    variant="contained"
-                                    size='large'
-                                    type="reset"
-                                    sx={{ mr: 1 }}
-                                >
-                                    Reset
-                                </Button>
-                                <Button
-                                    color="primary"
-                                    variant="contained"
-                                    type="submit"
-                                    size='large'
-                                >
-                                    Submit
-                                </Button>
-                            </Grid>
-
-                        </Grid>
-                    </Form>
-                )}
-            </Formik>
+                        </Form>
+                    )}
+                </Formik>
+            </Paper>
         </Box>
     );
 }

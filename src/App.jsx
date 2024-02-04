@@ -10,6 +10,7 @@ import Missing from './Pages/Missing/Missing';
 import Login from './Pages/Login/Login';
 import RequireAuth from './Auth/RequireAuth';
 import Unauthorized from './Pages/Unauthorized/Unauthorized';
+import RegisterGenerated from './Pages/Login/RegisterGenerated';
 
 
 export default function App() {
@@ -27,15 +28,16 @@ export default function App() {
           <CssBaseline />
           <Routes>
             <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<RegisterGenerated />} />
             <Route path='/unauthorized' element={<Unauthorized />} />
-            <Route element={<RequireAuth />} >
-              <Route path='/*' element={<Layout />}>
-                {routes.map((route) => (
-                  <Route key={route} path={route.path.substr(1)} element={route.component} />
-                ))}
-                <Route path='*' element={<Missing />} />
-              </Route>
+            {/* <Route element={<RequireAuth />} > */}
+            <Route path='/*' element={<Layout />}>
+              {routes.map((route) => (
+                <Route key={route} path={route.path.substr(1)} element={route.component} />
+              ))}
+              <Route path='*' element={<Missing />} />
             </Route>
+            {/* </Route> */}
           </Routes>
         </ThemeProvider>
       </ColorModeContext.Provider>
