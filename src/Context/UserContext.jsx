@@ -4,22 +4,11 @@ import { useXContext } from "./Context";
 const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
-    const [id, setId] = useState(0);
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [token, setToken] = useState("");
-    const [roles, setRoles] = useState([]);
 
-    const userContextValue = {
-        id, setId,
-        name, setName,
-        email, setEmail,
-        token, setToken,
-        roles, setRoles
-    };
+    const [user, setUser] = useState({});
 
     return (
-        <UserContext.Provider value={userContextValue}>
+        <UserContext.Provider value={{ user, setUser }}>
             {children}
         </UserContext.Provider>
     );

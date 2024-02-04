@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { UserContextProvider } from './Context/UserContext';
+import { AuthProvider } from './Auth/Auth';
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -8,6 +8,8 @@ import Layout from './Layout';
 import { AppRoutes } from './Data/AppRoutes';
 import Missing from './Pages/Missing/Missing';
 import Login from './Pages/Login/Login';
+import RequireAuth from './Auth/RequireAuth';
+import Unauthorized from './Pages/Unauthorized/Unauthorized';
 
 
 export default function App() {
@@ -19,21 +21,24 @@ export default function App() {
   const [theme, colorMode] = useMode();
 
   return (
-    <UserContextProvider>
+    <AuthProvider>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route path='/' element={<Login />} />
-            <Route path='/*' element={<Layout />}>
-              {routes.map((route) => (
-                <Route key={route} path={route.path.substr(1)} element={route.component} />
-              ))}
-              <Route path='*' element={<Missing />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/unauthorized' element={<Unauthorized />} />
+            <Route element={<RequireAuth />} >
+              <Route path='/*' element={<Layout />}>
+                {routes.map((route) => (
+                  <Route key={route} path={route.path.substr(1)} element={route.component} />
+                ))}
+                <Route path='*' element={<Missing />} />
+              </Route>
             </Route>
           </Routes>
         </ThemeProvider>
       </ColorModeContext.Provider>
-    </UserContextProvider>
+    </AuthProvider>
   );
 }

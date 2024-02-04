@@ -4,20 +4,66 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-import { useUserContext } from "../../Context/UserContext";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useAuthContext } from "../../Auth/Auth";
 import { AppRoutes } from "../../Data/AppRoutes";
+import axios from '../../api/axios';
+
+const LOGIN_URL = '/login'
 
 export default function Login() {
-  const { name, setName } = useUserContext();
+  const { setAuth } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from || '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function login(e) {
+
+
+  async function login(e) {
     e.preventDefault();
-    console.log('login');
+
+    try {
+      const response = await axios.post(LOGIN_URL,
+        JSON.stringify({ email, password }),
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        }
+      );
+
+      const user = response?.data?.id;
+      const accessToken = response?.data?.accessToken;
+      const roles = response?.data?.roles;
+
+      setAuth({ user, email, accessToken, roles });
+      navigate(from, { replace: true });
+    }
+    catch (error) {
+      if (!error?.response) {
+        console.log('Network Error');
+        return;
+      }
+
+      switch (error?.response?.status) {
+        case 401:
+          console.log('Unauthorized');
+          break;
+        case 403:
+          console.log('Forbidden');
+          break;
+        case 404:
+          console.log('Not Found');
+          break;
+        default:
+          console.log('Unknown Error');
+      }
+    }
+
     navigate(AppRoutes.dashboard.path)
   }
 
