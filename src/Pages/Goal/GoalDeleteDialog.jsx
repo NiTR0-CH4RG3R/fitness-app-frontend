@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function WorkoutPlanDeleteDialog({ isOpen, onSubmit, onClose }) {
+export default function GoalDeleteDialog({ isOpen, onSubmit, onClose }) {
     return (
         <Dialog
             open={isOpen}
@@ -19,7 +19,7 @@ export default function WorkoutPlanDeleteDialog({ isOpen, onSubmit, onClose }) {
             }}
         >
             <DialogTitle>
-                Confirm to delete data?
+                Confirm
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -27,12 +27,14 @@ export default function WorkoutPlanDeleteDialog({ isOpen, onSubmit, onClose }) {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
+
                 <Button autoFocus onClick={onClose}>
                     Close
                 </Button>
                 <Button type='submit'>
                     Delete
                 </Button>
+
             </DialogActions>
         </Dialog>
     )

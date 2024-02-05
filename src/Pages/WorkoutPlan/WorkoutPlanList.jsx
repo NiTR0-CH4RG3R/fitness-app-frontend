@@ -52,9 +52,7 @@ export default function WorkoutPlanList() {
     });
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [count, setCount] = useState(0);
-
+    const [rowsPerPage, setRowsPerPage] = useState(25);
 
     const followWorkoutPlan = (id) => {
         axios.post(
@@ -75,42 +73,88 @@ export default function WorkoutPlanList() {
             });
     }
 
+    const addWorkoutPlan = (formdata) => {
+        axios.post(
+            WORKOUTPLANS_URL,
+            JSON.stringify({ userId: user, ...formdata }),
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            }
+        )
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    const editWorkoutPlan = (formdata) => {
+        axios.put(
+            `${WORKOUTPLANS_URL}/${editDialogState.id}`,
+            JSON.stringify({ userId: user, ...formdata }),
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            }
+        )
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    const deleteWorkoutPlan = (formdata) => {
+        axios.delete(`${WORKOUTPLANS_URL}/${formdata.id}`)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     useEffect(() => {
         const isPublic = mode === 'public';
 
-        axios.get(`${WORKOUTPLANS_URL}/count`)
+
+        axios.get(
+            WORKOUTPLANS_URL,
+            JSON.stringify({ userId: user, page, rowsPerPage, isPublic }),
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            }
+        )
             .then(response => {
-                setCount(response?.data?.count);
-                axios.get(
-                    WORKOUTPLANS_URL,
-                    JSON.stringify({ userId: user, page, rowsPerPage, isPublic }),
-                    {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        withCredentials: true
-                    }
-                )
-                    .then(response => {
-                        const plans = response?.data?.workoutplans.map((workoutplan) => {
-                            return {
-                                id: workoutplan.id,
-                                name: workoutplan.name,
-                                duration: workoutplan.duration,
-                                createdBy: workoutplan.createdBy,
-                                createdDate: new Date(workoutplan.createdDate).toLocaleString(),
-                                action: (
-                                    <>
-                                        <Button variant='contained' color='success' sx={{ m: 0.3 }} onClick={() => followWorkoutPlan(workoutplan.isFollowing ? undefined : workoutplan.id)}> {workoutplan.isFollowing ? <span> Unfollow </span> : <span> Follow </span>} </Button>
-                                        {isPublic && <Button variant='contained' color='primary' sx={{ m: 0.3 }} onClick={() => setEditDialogState({ id: workoutplan.id, isOpen: true })}> Edit </Button>}
-                                        {isPublic && <Button variant='contained' color='error' sx={{ m: 0.3 }} onClick={() => setConfirmDialogState({ id: workoutplan.id, isOpen: true })}> Delete </Button>}
-                                    </>
-                                )
-                            };
-                        });
-                        setRows(plans);
-                    });
-            }).catch(error => {
+                const plans = response?.data?.workoutplans.map((workoutplan) => {
+                    return {
+                        id: workoutplan.id,
+                        name: workoutplan.name,
+                        duration: workoutplan.duration,
+                        createdBy: workoutplan.createdBy,
+                        createdDate: new Date(workoutplan.createdDate).toLocaleString(),
+                        action: (
+                            <>
+                                <Button variant='contained' color='success' sx={{ m: 0.3 }} onClick={() => followWorkoutPlan(workoutplan.isFollowing ? undefined : workoutplan.id)}> {workoutplan.isFollowing ? <span> Unfollow </span> : <span> Follow </span>} </Button>
+                                {isPublic && <Button variant='contained' color='primary' sx={{ m: 0.3 }} onClick={() => setEditDialogState({ id: workoutplan.id, isOpen: true })}> Edit </Button>}
+                                {isPublic && <Button variant='contained' color='error' sx={{ m: 0.3 }} onClick={() => setConfirmDialogState({ id: workoutplan.id, isOpen: true })}> Delete </Button>}
+                            </>
+                        )
+                    };
+                });
+                setRows(plans);
+            })
+            .catch(error => {
                 console.log(error);
                 setRows(mode === 'private' ? [
                     {
@@ -225,16 +269,16 @@ export default function WorkoutPlanList() {
                 </TableContainer>
                 <TablePagination
                     component="div"
-                    count={count}
+                    count={-1}
                     page={page}
                     onPageChange={(e, newPage) => { setPage(newPage); }}
                     rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={(e) => { setRowsPerPage(e.target.value); }}
                 />
             </Paper>
-            <WorkoutPlanAddDialog isOpen={addDialogState.isOpen} onClose={() => setAddDialogState({ isOpen: false })} />
-            <WorkoutPlanEditDialog isOpen={editDialogState.isOpen} onClose={() => setEditDialogState({ id: undefined, isOpen: false })} />
-            <WorkoutPlanDeleteDialog isOpen={confirmDialogState.isOpen} onClose={() => setConfirmDialogState({ id: undefined, isOpen: false })} />
+            <WorkoutPlanAddDialog isOpen={addDialogState.isOpen} onSubmit={addWorkoutPlan} onClose={() => setAddDialogState({ isOpen: false })} />
+            <WorkoutPlanEditDialog isOpen={editDialogState.isOpen} onSubmit={editWorkoutPlan} onClose={() => setEditDialogState({ id: undefined, isOpen: false })} />
+            <WorkoutPlanDeleteDialog isOpen={confirmDialogState.isOpen} onSubmit={deleteWorkoutPlan} onClose={() => setConfirmDialogState({ id: undefined, isOpen: false })} />
 
         </Box>
     );

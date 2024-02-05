@@ -5,7 +5,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
@@ -16,13 +15,12 @@ export default function WorkoutPlanAddDialog({ isOpen, onSubmit, onClose }) {
         <Dialog
             open={isOpen}
             onClose={onClose}
-            PaperProps={{
-                component: "form",
-                onSubmit: (event) => {
-                    event.preventDefault();
-                    const formData = new FormData(event.currentTarget);
-                    onSubmit(Object.fromEntries(formData));
-                },
+            component='form'
+            onSubmit={(event) => {
+                event.preventDefault();
+                const formData = new FormData(event.currentTarget);
+                onSubmit(Object.fromEntries(formData));
+                onClose();
             }}
         >
             <DialogTitle>Add a Workout Plan</DialogTitle>
