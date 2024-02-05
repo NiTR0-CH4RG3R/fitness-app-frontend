@@ -30,14 +30,14 @@ export default function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<RegisterGenerated />} />
             <Route path='/unauthorized' element={<Unauthorized />} />
-            {/* <Route element={<RequireAuth />} > */}
-            <Route path='/*' element={<Layout />}>
-              {routes.map((route) => (
-                <Route key={route} path={route.path.substr(1)} element={route.component} />
-              ))}
-              <Route path='*' element={<Missing />} />
+            <Route element={<RequireAuth allowedRoles={['USER']} />} >
+              <Route path='/*' element={<Layout />}>
+                {routes.map((route) => (
+                  <Route key={route} path={route.path.substr(1)} element={route.component} />
+                ))}
+                <Route path='*' element={<Missing />} />
+              </Route>
             </Route>
-            {/* </Route> */}
           </Routes>
         </ThemeProvider>
       </ColorModeContext.Provider>
