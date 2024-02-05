@@ -9,13 +9,13 @@ import Rating from '@mui/material/Rating';
 import FormControl from '@mui/material/FormControl';
 import { useParams } from 'react-router-dom';
 import YouTube from 'react-youtube';
-import axios from '../../api/axios';
-
-const EXERCISES_URL = '/exercises';
+import useExerciseService from '../../services/useExerciseService';
 
 export default function Exercise() {
 
     const { id } = useParams();
+
+    const exerciseService = useExerciseService();
 
     const [title, setTitle] = useState('');
     const [image, setImage] = useState("https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg");
@@ -28,22 +28,18 @@ export default function Exercise() {
     ]);
 
     useEffect(() => {
-        axios.get(`${EXERCISES_URL}/${id}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            withCredentials: true
-        })
-            .then(response => {
-                setImage(response.data.image);
-                setTitle(response.data.title);
-                setDescription(response.data.description);
-                setVideo(response.data.video);
-                setComments(response.data.comments);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        (async () => {
+            const response = await exerciseService.getExercise(id);
+            const reviews = await exerciseService.getExerciseReviews(id);
+            if (response === null) return;
+            setImage(response.image);
+            setTitle(response.title);
+            setDescription(response.description);
+            setVideo(response.video);
+
+            if (reviews === null) return;
+            setComments(reviews);
+        })();
     }, [id]);
 
     const [comment, setComment] = useState('');
@@ -51,20 +47,13 @@ export default function Exercise() {
 
     function addComment(e) {
         e.preventDefault();
-
-        axios.post(
-            `${EXERCISES_URL}/${id}/comments`,
-            {
-                comment,
-                rating
+        (
+            async () => {
+                await exerciseService.createExerciseReview(id, { comment, rating });
+                const reviews = await exerciseService.getExerciseReviews(id);
+                setComments(reviews);
             }
-        )
-            .then(response => {
-                setComments([...comments, response.data]);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        )();
     }
 
     return (

@@ -4,15 +4,11 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useNavigate, Navigate, useLocation } from "react-router-dom";
-import { useAuthContext } from "../../Auth/Auth";
-import { AppRoutes } from "../../Data/AppRoutes";
-import axios from '../../api/axios';
-
-const LOGIN_URL = '/login'
+import { useNavigate, useLocation } from "react-router-dom";
+import useAuthServices from "../../services/useAuthService";
 
 export default function Login() {
-  const { setAuth } = useAuthContext();
+  const authService = useAuthServices();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location?.state?.from || '/';
@@ -20,51 +16,15 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
-
   async function login(e) {
     e.preventDefault();
-
     try {
-      const response = await axios.post(LOGIN_URL,
-        JSON.stringify({ email, password }),
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          withCredentials: true
-        }
-      );
-
-      const user = response?.data?.id;
-      const accessToken = response?.data?.accessToken;
-      const roles = response?.data?.roles;
-
-      setAuth({ user, email, accessToken, roles });
+      authService.login(email, password);
       navigate(from, { replace: true });
     }
     catch (error) {
-      if (!error?.response) {
-        console.log('Network Error');
-        return;
-      }
-
-      switch (error?.response?.status) {
-        case 401:
-          console.log('Unauthorized');
-          break;
-        case 403:
-          console.log('Forbidden');
-          break;
-        case 404:
-          console.log('Not Found');
-          break;
-        default:
-          console.log('Unknown Error');
-      }
+      console.log(error)
     }
-
-    navigate(AppRoutes.dashboard.path)
   }
 
   function reset(e) {

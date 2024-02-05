@@ -11,8 +11,7 @@ import Button from "@mui/material/Button";
 import GoalDeleteDialog from "./GoalDeleteDialog";
 import GoalAddDialog from "./GoalAddDialog";
 import GoalEditDialog from "./GoalEditDialog";
-import { useAuthContext } from "../../Auth/Auth";
-import axios from '../../api/axios'
+import useGoalService from "../../services/useGoalService";
 
 const columns = [
     { id: "id", label: "Id", minWidth: 170 },
@@ -23,85 +22,34 @@ const columns = [
     { id: "action", label: "Action", minWidth: 170 },
 ];
 
-const GOALS_URL = '/goals'
 
 export default function GoalList() {
-    const { user } = useAuthContext();
+    const goalService = useGoalService();
 
     const [rows, setRows] = useState([]);
     const [deleteDialogState, setDeleteDialogState] = useState({ isOpen: false, id: undefined });
     const [editDialogState, setEditDialogState] = useState({ isOpen: false, id: undefined });
     const [addDialogState, setAddDialogState] = useState({ isOpen: false });
 
-    function deleteGoal(formdata) {
-        axios.delete(`${GOALS_URL}/${formdata.id}`)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    async function deleteGoal(formdata) {
+        await goalService.deleteGoal(deleteDialogState.id);
+        setRows(rows.filter(row => row.id !== deleteDialogState.id));
     }
 
-    function addGoal(formdata) {
-        axios.post(GOALS_URL,
-            JSON.stringify({ userId: user, ...formdata }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    async function addGoal(formdata) {
+        await goalService.addGoal(formdata);
     }
 
-    function editGoal(formdata) {
-        axios.put(`${GOALS_URL}/${editDialogState.id}`,
-            JSON.stringify({ userId: user, ...formdata }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    async function editGoal(formdata) {
+        await goalService.updateGoal(editDialogState.id, formdata);
     }
 
     useEffect(() => {
-        axios.get(GOALS_URL,
-            JSON.stringify({ userId: user }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
-            .then(response => {
-                setRows(response?.data)
-            })
-            .catch(error => {
-                console.log(error);
-                setRows(
-                    [
-                        {
-                            id: 1,
-                            type: "Weight loss",
-                            value: "1",
-                            currentDate: new Date().toISOString().split("T")[0],
-                            currentAchivedValue: 8,
-                        },
-                    ]
-                )
-            });
+        (async () => {
+            const response = await goalService.getGoals();
+            if (response === null) return;
+            setRows(response);
+        })();
     }, []);
 
     return (

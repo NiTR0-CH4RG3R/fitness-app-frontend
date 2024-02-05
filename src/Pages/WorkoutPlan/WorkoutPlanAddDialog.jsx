@@ -7,19 +7,23 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Box from "@mui/material/Box";
+import Autocomplete from '@mui/material/Autocomplete';
 
 
 export default function WorkoutPlanAddDialog({ isOpen, onSubmit, onClose }) {
     const [isPublic, setIsPublic] = useState(false);
+    const [exerciseList, setExerciseList] = useState([]);
+
     return (
         <Dialog
             open={isOpen}
             onClose={onClose}
             component='form'
-            onSubmit={(event) => {
+            onSubmit={async (event) => {
                 event.preventDefault();
                 const formData = new FormData(event.currentTarget);
-                onSubmit(Object.fromEntries(formData));
+                await onSubmit(Object.fromEntries(formData));
                 onClose();
             }}
         >
@@ -44,8 +48,6 @@ export default function WorkoutPlanAddDialog({ isOpen, onSubmit, onClose }) {
                     name="duration"
                 />
 
-
-
                 <FormControlLabel
                     control={
                         <Switch checked={isPublic} onChange={() => { setIsPublic(!isPublic) }} name="isPublic" />
@@ -53,6 +55,8 @@ export default function WorkoutPlanAddDialog({ isOpen, onSubmit, onClose }) {
                     label="Is Public"
                     labelPlacement="start"
                 />
+
+
 
 
             </DialogContent>

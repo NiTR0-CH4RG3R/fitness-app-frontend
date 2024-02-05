@@ -16,8 +16,8 @@ import AddIcon from '@mui/icons-material/Add';
 import WorkoutPlanAddDialog from './WorkoutPlanAddDialog';
 import WorkoutPlanEditDialog from './WorkoutPlanEditDialog';
 import WorkoutPlanDeleteDialog from './WorkoutPlanDeleteDialog';
-import axios from '../../api/axios';
-import { useAuthContext } from '../../Auth/Auth';
+import useWorkoutPlanService from '../../services/useWorkoutPlanService';
+import useUserService from '../../services/useUserService';
 
 const columns = [
     { id: 'name', label: 'Name', minWidth: 170, align: 'left' },
@@ -27,11 +27,10 @@ const columns = [
     { id: 'action', label: 'Action', minWidth: 270, align: 'center' },
 ];
 
-const WORKOUTPLANS_URL = '/workoutplans';
-
 export default function WorkoutPlanList() {
 
-    const { user } = useAuthContext();
+    const workoutPlanService = useWorkoutPlanService();
+    const userService = useUserService();
 
     const [mode, setMode] = useState('public');
 
@@ -54,89 +53,28 @@ export default function WorkoutPlanList() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
 
-    const followWorkoutPlan = (id) => {
-        axios.post(
-            `${WORKOUTPLANS_URL}/follow`,
-            JSON.stringify({ userId: user, workoutPlanId: (id === undefined) ? null : id }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            }
-        )
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    const followWorkoutPlan = async (id) => {
+        await userService.followWorkoutPlan(id);
     }
 
-    const addWorkoutPlan = (formdata) => {
-        axios.post(
-            WORKOUTPLANS_URL,
-            JSON.stringify({ userId: user, ...formdata }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            }
-        )
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    const addWorkoutPlan = async (formdata) => {
+        await workoutPlanService.createWorkoutPlan(formdata);
     }
 
-    const editWorkoutPlan = (formdata) => {
-        axios.put(
-            `${WORKOUTPLANS_URL}/${editDialogState.id}`,
-            JSON.stringify({ userId: user, ...formdata }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            }
-        )
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    const editWorkoutPlan = async (formdata) => {
+        await workoutPlanService.updateWorkoutPlan(editDialogState.id, formdata);
     }
 
-    const deleteWorkoutPlan = (formdata) => {
-        axios.delete(`${WORKOUTPLANS_URL}/${formdata.id}`)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    const deleteWorkoutPlan = async (formdata) => {
+        await workoutPlanService.deleteWorkoutPlan(confirmDialogState.id);
     }
 
     useEffect(() => {
-        const isPublic = mode === 'public';
-
-
-        axios.get(
-            WORKOUTPLANS_URL,
-            JSON.stringify({ userId: user, page, rowsPerPage, isPublic }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            }
-        )
-            .then(response => {
-                const plans = response?.data?.workoutplans.map((workoutplan) => {
+        (async () => {
+            const isPublic = mode === 'public';
+            try {
+                const response = isPublic ? await workoutPlanService.getPublicWorkoutPlans() : await workoutPlanService.getPrivateWorkoutPlans();
+                const plans = response.map((workoutplan) => {
                     return {
                         id: workoutplan.id,
                         name: workoutplan.name,
@@ -145,7 +83,7 @@ export default function WorkoutPlanList() {
                         createdDate: new Date(workoutplan.createdDate).toLocaleString(),
                         action: (
                             <>
-                                <Button variant='contained' color='success' sx={{ m: 0.3 }} onClick={() => followWorkoutPlan(workoutplan.isFollowing ? undefined : workoutplan.id)}> {workoutplan.isFollowing ? <span> Unfollow </span> : <span> Follow </span>} </Button>
+                                <Button variant='contained' color='success' sx={{ m: 0.3 }} onClick={async () => await followWorkoutPlan(workoutplan.isFollowing ? undefined : workoutplan.id)}> {workoutplan.isFollowing ? <span> Unfollow </span> : <span> Follow </span>} </Button>
                                 {isPublic && <Button variant='contained' color='primary' sx={{ m: 0.3 }} onClick={() => setEditDialogState({ id: workoutplan.id, isOpen: true })}> Edit </Button>}
                                 {isPublic && <Button variant='contained' color='error' sx={{ m: 0.3 }} onClick={() => setConfirmDialogState({ id: workoutplan.id, isOpen: true })}> Delete </Button>}
                             </>
@@ -153,8 +91,8 @@ export default function WorkoutPlanList() {
                     };
                 });
                 setRows(plans);
-            })
-            .catch(error => {
+            }
+            catch (error) {
                 console.log(error);
                 setRows(mode === 'private' ? [
                     {
@@ -183,8 +121,9 @@ export default function WorkoutPlanList() {
                                 </>
                             )
                         },
-                    ])
-            });
+                    ]);
+            }
+        })()
     }, [mode, rowsPerPage, page]);
 
     const handleChange = (event, newMode) => {

@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
 import MediaCard from '../../Components/MediaCard';
 import SearchBar from '../../Components/SearchBar';
-import axios from '../../api/axios';
+import useExerciseService from '../../services/useExerciseService';
 
 // [TODO] Replace this with a call to the backend
 const sample = [
@@ -29,11 +29,12 @@ const sample = [
     { title: 'Lizard 17', image: (process.env.PUBLIC_URL + '/img/contemplative-reptile.jpg'), description: 'Lizards are a widespread group of squamate reptiles, with over 6,017 species, ranging across all continents except Antarctica' },
 ]
 
-const EXERCISES_URL = '/exercises';
 
 const cardsPerPage = 8;
 
 export default function ExerciseList() {
+
+    const exerciseService = useExerciseService();
 
     const [page, setPage] = useState(1);
     const [exerciseList, setExerciseList] = useState(sample.slice((page - 1) * cardsPerPage, page * cardsPerPage));
@@ -41,24 +42,12 @@ export default function ExerciseList() {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        axios.get(`${EXERCISES_URL}/count`)
-            .then(response => {
-                setPageCount(Math.ceil(response?.data?.count / cardsPerPage));
-                axios.get(EXERCISES_URL,
-                    JSON.stringify({ page, cardsPerPage }),
-                    {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        withCredentials: true
-                    })
-                    .then(response => {
-                        setExerciseList(response?.data?.exercises);
-                    })
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        (async () => {
+            const exerciseCount = await exerciseService.getExerciseCount();
+            setPageCount(Math.ceil(exerciseCount === null ? sample.length : exerciseCount / cardsPerPage));
+            const exercises = await exerciseService.getExercises(page - 1, cardsPerPage);
+            setExerciseList(exercises === null ? sample : exercises);
+        })();
     }, [page]);
 
     useEffect(() => {
@@ -66,20 +55,10 @@ export default function ExerciseList() {
             return;
         }
 
-        axios.get(`${EXERCISES_URL}/search`,
-            JSON.stringify({ search }),
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            })
-            .then(response => {
-                setExerciseList(response?.data?.exercises);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        (async () => {
+            const exercises = await exerciseService.getExerciseByName(search);
+            setExerciseList(exercises);
+        })();
     }, [search]);
 
     const navigate = useNavigate();
@@ -115,7 +94,7 @@ export default function ExerciseList() {
             >
                 {exerciseList.map((card, index) => (
                     <Grid item key={index} >
-                        <MediaCard title={card.title} image={card.image} description={card.description} onClick={(e) => { navigate(AppRoutes.exercise.path); }} />
+                        <MediaCard title={card.name} image={card.gifURL} description={card.description} onClick={(e) => { navigate(AppRoutes.exercise.path); }} />
                     </Grid>
                 ))}
             </Grid>

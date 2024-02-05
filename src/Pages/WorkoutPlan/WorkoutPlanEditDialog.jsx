@@ -15,10 +15,10 @@ export default function WorkoutPlanEditDialog({ isOpen, onSubmit, onClose }) {
             open={isOpen}
             onClose={onClose}
             component='form'
-            onSubmit={(event) => {
+            onSubmit={async (event) => {
                 event.preventDefault();
                 const formData = new FormData(event.currentTarget);
-                onSubmit(Object.fromEntries(formData));
+                await onSubmit(Object.fromEntries(formData));
                 onClose();
             }}
         >

@@ -4,11 +4,8 @@ import { Button, TextField, MenuItem, Grid, Box, Paper } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import * as Yup from 'yup';
-import axios from '../../api/axios';
-import { useAuthContext } from '../../Auth/Auth';
-import { useNavigate, Link, useLocation } from "react-router-dom";
-
-const REGISTER_URL = '/register';
+import { useNavigate, useLocation } from "react-router-dom";
+import useAuthServices from "../../services/useAuthService";
 
 const validationSchema = Yup.object({
     firstName: Yup.string().required('First Name is required'),
@@ -28,7 +25,7 @@ const validationSchema = Yup.object({
 
 export default function RegisterGenerated() {
 
-    const { setAuth } = useAuthContext();
+    const authService = useAuthServices();
     const navigate = useNavigate();
     const location = useLocation();
     const from = location?.state?.from || '/';
@@ -68,44 +65,11 @@ export default function RegisterGenerated() {
                     onSubmit={async (values, { setSubmitting }) => {
                         try {
                             setSubmitting(true);
-                            const response = await axios.post(REGISTER_URL,
-                                JSON.stringify(values),
-                                {
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    withCredentials: true
-                                });
-
-                            const user = response?.data?.id;
-                            const accessToken = response?.data?.accessToken;
-                            const roles = response?.data?.roles;
-                            const email = values.email;
-
-                            setAuth({ user, email, accessToken, roles });
+                            await authService.register(values);
                             navigate(from, { replace: true });
-
                         }
-                        catch (error) {
+                        catch {
                             setSubmitting(false);
-                            if (!error?.response) {
-                                console.log('Network Error');
-                                return;
-                            }
-
-                            switch (error?.response?.status) {
-                                case 401:
-                                    console.log('Unauthorized');
-                                    break;
-                                case 403:
-                                    console.log('Forbidden');
-                                    break;
-                                case 404:
-                                    console.log('Not Found');
-                                    break;
-                                default:
-                                    console.log('Unknown Error');
-                            }
                         }
                     }}
                 >
