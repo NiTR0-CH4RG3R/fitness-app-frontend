@@ -5,25 +5,19 @@ import * as authAPI from '../api/authAPI';
 export default function useAuthServices() {
     const { setAuth } = useAuthContext();
 
-    const login = async (email, password) => {
-        try {
-            const { user, accessToken, roles } = validateResponse(await authAPI.login({ email, password }));
-            setAuth({ user, email, accessToken, roles });
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
+    const login = (email, password) =>
+        authAPI.login({ email, password })
+            .then(response => {
+                const { user, accessToken, roles } = validateResponse(response);
+                setAuth({ user, email, accessToken, roles });
+            });
 
-    const register = async ({ goalNotification = false, workoutPlanNotification = false, otherNotification = false, ...data }) => {
-        try {
-            const { user, accessToken, roles } = validateResponse(await authAPI.register({ ...data, goalNotification, workoutPlanNotification, otherNotification }));
-            setAuth({ user, email: data.email, accessToken, roles });
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
+    const register = ({ goalNotification = false, workoutPlanNotification = false, otherNotification = false, ...data }) =>
+        authAPI.register({ ...data, goalNotification, workoutPlanNotification, otherNotification })
+            .then(response => {
+                const { user, accessToken, roles } = validateResponse(response);
+                setAuth({ user, email: data.email, accessToken, roles });
+            });
 
     return { login, register };
 }

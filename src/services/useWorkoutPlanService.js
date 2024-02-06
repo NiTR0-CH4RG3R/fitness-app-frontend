@@ -5,57 +5,19 @@ import * as workoutPlanAPI from "../api/workoutPlanAPI";
 export default function useWorkoutPlanService() {
     const { auth } = useAuthContext();
 
-    const getPublicWorkoutPlans = async () => {
-        return validateResponse(await workoutPlanAPI.getPublicWorkoutPlans());
-    }
-
-    const getPrivateWorkoutPlans = async () => {
-        return validateResponse(await workoutPlanAPI.getPrivateWorkoutPlans(auth.user));
-    }
-
-    const getWorkoutPlan = async (id) => {
-        return validateResponse(await workoutPlanAPI.getWorkoutPlan(id));
-    }
-
-    const createWorkoutPlan = async (data) => {
-        validateResponse(await workoutPlanAPI.createWorkoutPlan(auth.user, data));
-    }
-
-    const updateWorkoutPlan = async (id, data) => {
-        validateResponse(await workoutPlanAPI.updateWorkoutPlan(auth.user, id, data));
-    }
-
-    const deleteWorkoutPlan = async (id) => {
-        validateResponse(await workoutPlanAPI.deleteWorkoutPlan(auth.user, id));
-    }
-
-    const getWorkoutPlanExercises = async (id) => {
-        return validateResponse(await workoutPlanAPI.getWorkoutPlanExercises(id));
-    }
-
-    const addWorkoutPlanExercise = async (id, data) => {
-        validateResponse(await workoutPlanAPI.addWorkoutPlanExercise(auth.user, id, data));
-    }
-
-    const removeWorkoutPlanExercise = async (id) => {
-        validateResponse(await workoutPlanAPI.removeWorkoutPlanExercise(auth.user, id));
-    }
-
-    const getWorkoutPlanReviews = async (id) => {
-        return validateResponse(await workoutPlanAPI.getWorkoutPlanReviews(id));
-    }
-
-    const createWorkoutPlanReview = async (id, data) => {
-        validateResponse(await workoutPlanAPI.createWorkoutPlanReview(auth.user, id, data));
-    }
-
-    const updateWorkoutPlanReview = async (id, data) => {
-        validateResponse(await workoutPlanAPI.updateWorkoutPlanReview(auth.user, id, data));
-    }
-
-    const deleteWorkoutPlanReview = async (id) => {
-        validateResponse(await workoutPlanAPI.deleteWorkoutPlanReview(auth.user, id));
-    }
+    const getPublicWorkoutPlans = () => workoutPlanAPI.getPublicWorkoutPlans().then(response => validateResponse(response))
+    const getPrivateWorkoutPlans = () => workoutPlanAPI.getPrivateWorkoutPlans(auth.user).then(response => validateResponse(response))
+    const getWorkoutPlan = (id) => workoutPlanAPI.getWorkoutPlan(id).then(response => validateResponse(response))
+    const createWorkoutPlan = (data) => workoutPlanAPI.createWorkoutPlan(auth.user, data).then(response => validateResponse(response))
+    const updateWorkoutPlan = (id, data) => workoutPlanAPI.updateWorkoutPlan(auth.user, id, data).then(response => validateResponse(response))
+    const deleteWorkoutPlan = (id) => workoutPlanAPI.deleteWorkoutPlan(auth.user, id).then(response => validateResponse(response))
+    const getWorkoutPlanExercises = (id) => workoutPlanAPI.getWorkoutPlanExercises(id).then(response => validateResponse(response))
+    const addWorkoutPlanExercise = (id, data) => workoutPlanAPI.addWorkoutPlanExercise(auth.user, id, data).then(response => validateResponse(response))
+    const removeWorkoutPlanExercise = (id) => workoutPlanAPI.removeWorkoutPlanExercise(auth.user, id).then(response => validateResponse(response))
+    const getWorkoutPlanReviews = (id) => workoutPlanAPI.getWorkoutPlanReviews(id).then(response => validateResponse(response))
+    const createWorkoutPlanReview = (id, data) => workoutPlanAPI.createWorkoutPlanReview(auth.user, id, data).then(response => validateResponse(response))
+    const updateWorkoutPlanReview = (id, data) => workoutPlanAPI.updateWorkoutPlanReview(auth.user, id, data).then(response => validateResponse(response))
+    const deleteWorkoutPlanReview = (id) => workoutPlanAPI.deleteWorkoutPlanReview(auth.user, id).then(response => validateResponse(response))
 
     return { getPublicWorkoutPlans, getPrivateWorkoutPlans, getWorkoutPlan, createWorkoutPlan, updateWorkoutPlan, deleteWorkoutPlan, getWorkoutPlanExercises, addWorkoutPlanExercise, removeWorkoutPlanExercise, getWorkoutPlanReviews, createWorkoutPlanReview, updateWorkoutPlanReview, deleteWorkoutPlanReview };
 

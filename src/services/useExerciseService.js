@@ -5,53 +5,18 @@ import { useAuthContext } from '../Auth/Auth';
 export default function useExerciseService() {
     const { auth } = useAuthContext();
 
-    const getExercises = async () => {
-        return validateResponse(await exerciseAPI.getExercises());
-    }
-
-    const getExercise = async (id) => {
-        return validateResponse(await exerciseAPI.getExercise(id));
-    }
-
-    const getExerciseCount = async () => {
-        return validateResponse(await exerciseAPI.getExerciseCount());
-    }
-
-    const getExercisesPage = async (page, size) => {
-        return validateResponse(await exerciseAPI.getExercisesPage(page, size));
-    }
-
-    const getExerciseByName = async (name) => {
-        return validateResponse(await exerciseAPI.getExerciseByName(name));
-    }
-
-    const createExercise = async (data) => {
-        validateResponse(await exerciseAPI.createExercise(auth.user, data));
-    }
-
-    const updateExercise = async (id, data) => {
-        validateResponse(await exerciseAPI.updateExercise(auth.user, id, data));
-    }
-
-    const deleteExercise = async (id) => {
-        validateResponse(await exerciseAPI.deleteExercise(auth.user, id));
-    }
-
-    const getExerciseReviews = async (id) => {
-        return validateResponse(await exerciseAPI.getExerciseReviews(id));
-    }
-
-    const createExerciseReview = async (id, data) => {
-        validateResponse(await exerciseAPI.createExerciseReview(auth.user, id, data));
-    }
-
-    const updateExerciseReview = async (id, data) => {
-        validateResponse(await exerciseAPI.updateExerciseReview(auth.user, id, data));
-    }
-
-    const deleteExerciseReview = async (id) => {
-        validateResponse(await exerciseAPI.deleteExerciseReview(auth.user, id));
-    }
+    const getExercises = () => exerciseAPI.getExercises().then(response => validateResponse(response));
+    const getExercise = (id) => exerciseAPI.getExercise(id).then(response => validateResponse(response));
+    const getExerciseCount = () => exerciseAPI.getExerciseCount().then(response => validateResponse(response));
+    const getExercisesPage = (page, size) => exerciseAPI.getExercisesPage(page, size).then(response => validateResponse(response));
+    const getExerciseByName = (name) => exerciseAPI.getExerciseByName(name).then(response => validateResponse(response));
+    const createExercise = (data) => exerciseAPI.createExercise(auth.user, data).then(response => validateResponse(response));
+    const updateExercise = (id, data) => exerciseAPI.updateExercise(auth.user, id, data).then(response => validateResponse(response));
+    const deleteExercise = (id) => exerciseAPI.deleteExercise(auth.user, id).then(response => validateResponse(response));
+    const getExerciseReviews = (id) => exerciseAPI.getExerciseReviews(id).then(response => validateResponse(response));
+    const createExerciseReview = (id, data) => exerciseAPI.createExerciseReview(auth.user, id, data).then(response => validateResponse(response));
+    const updateExerciseReview = (id, data) => exerciseAPI.updateExerciseReview(auth.user, id, data).then(response => validateResponse(response));
+    const deleteExerciseReview = (id) => exerciseAPI.deleteExerciseReview(auth.user, id).then(response => validateResponse(response));
 
     return { getExercises, getExercise, getExerciseCount, getExercisesPage, getExerciseByName, createExercise, updateExercise, deleteExercise, getExerciseReviews, createExerciseReview, updateExerciseReview, deleteExerciseReview };
 }

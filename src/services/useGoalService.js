@@ -5,29 +5,12 @@ import * as goalAPI from "../api/goalAPI";
 export default function useGoalService() {
     const { auth } = useAuthContext();
 
-    const getGoals = async () => {
-        return validateResponse(await goalAPI.getGoals(auth.user));
-    }
-
-    const getGoal = async (id) => {
-        return validateResponse(await goalAPI.getGoal(auth.user, id));
-    }
-
-    const createGoal = async (data) => {
-        validateResponse(await goalAPI.createGoal(auth.user, data));
-    }
-
-    const updateGoal = async (id, data) => {
-        validateResponse(await goalAPI.updateGoal(auth.user, id, data));
-    }
-
-    const deleteGoal = async (id) => {
-        validateResponse(await goalAPI.deleteGoal(auth.user, id));
-    }
-
-    const getGoalProgress = async (id) => {
-        return validateResponse(await goalAPI.getGoalProgress(auth.user, id));
-    }
+    const getGoals = () => goalAPI.getGoals(auth.user).then(response => validateResponse(response))
+    const getGoal = (id) => goalAPI.getGoal(auth.user, id).then(response => validateResponse(response))
+    const createGoal = (data) => goalAPI.createGoal(auth.user, data).then(response => validateResponse(response))
+    const updateGoal = (id, data) => goalAPI.updateGoal(auth.user, id, data).then(response => validateResponse(response))
+    const deleteGoal = (id) => goalAPI.deleteGoal(auth.user, id).then(response => validateResponse(response))
+    const getGoalProgress = (id) => goalAPI.getGoalProgress(auth.user, id).then(response => validateResponse(response))
 
     return { getGoals, getGoal, createGoal, updateGoal, deleteGoal, getGoalProgress };
 }

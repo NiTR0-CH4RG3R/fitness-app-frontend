@@ -1,15 +1,28 @@
 export function validateResponse(response) {
-    if (response.error !== null) {
-        console.error(`[CONNECTION ERROR] : ${response.error}`);
+    if (response === null || response === undefined || response.status === undefined || response.status === null) {
+        console.error(`[CONNECTION ERROR] : No response from server`);
         return null;
     }
 
-    try {
-        if (response.data.code !== '00') console.error(`[SERVER ERROR] : ${response.data.message}`);
-        return response.data.content ? response.data.content : null;
+    if (response.status >= 200 && response.status < 300) {
+        return response.data.content;
     }
-    catch (error) {
-        console.error(`[UNKNOWN ERROR] : ${error}`);
-        return null;
+
+    switch (response.status) {
+        case 401:
+            console.error(`[UNAUTHORIZED] : ${response.data.message} - ${response.status}`);
+            return null;
+        case 403:
+            console.error(`[FORBIDDEN] : ${response.data.message} - ${response.status}`);
+            return null;
+        case 404:
+            console.error(`[NOT FOUND] : ${response.data.message} - ${response.status}`);
+            return null;
+        case 500:
+            console.error(`[SERVER ERROR] : ${response.data.message} - ${response.status}`);
+            return null;
+        default:
+            console.error(`[UNKNOWN ERROR] : ${response.data.message} - ${response.status}`);
+            return null;
     }
 }
