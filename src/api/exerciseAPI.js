@@ -2,50 +2,15 @@ import { get, post, put, del } from './axios';
 
 const EXERCISE_URL = '/exercise';
 
-export async function getExercises() {
-    return await get(`${EXERCISE_URL}/all`);
-}
-
-export async function getExerciseCount() {
-    return await get(`${EXERCISE_URL}/count`);
-}
-
-export async function getExercisesPage(page, size) {
-    return await get(EXERCISE_URL, { page: page, noOfElement: size });
-}
-
-export async function getExercise(id) {
-    return await get(`${EXERCISE_URL}/${id}`);
-}
-
-export async function getExerciseByName(name) {
-    return await get(`${EXERCISE_URL}/name/${name}`);
-}
-
-export async function createExercise(userId, data) {
-    return await post(EXERCISE_URL, data, { userId: userId });
-}
-
-export async function updateExercise(userId, id, data) {
-    return await put(`${EXERCISE_URL}/${id}`, data, { userId: userId });
-}
-
-export async function deleteExercise(userId, id) {
-    return await del(`${EXERCISE_URL}/${id}`, { userId: userId });
-}
-
-export async function getExerciseReviews(id) {
-    return await get(`${EXERCISE_URL}/${id}/reviews`);
-}
-
-export async function createExerciseReview(userId, id, data) {
-    return await post(`${EXERCISE_URL}/${id}/reviews`, data, { userId: userId });
-}
-
-export async function updateExerciseReview(userId, id, data) {
-    return await put(`${EXERCISE_URL}/${id}/reviews`, data, { userId: userId });
-}
-
-export async function deleteExerciseReview(userId, id) {
-    return await del(`${EXERCISE_URL}/${id}/reviews`, { userId: userId });
-}
+export const getExercises = () => get(`${EXERCISE_URL}/all`);
+export const getExerciseCount = () => get(`${EXERCISE_URL}/count`);
+export const getExercisesPage = (page, size) => get(`${EXERCISE_URL}`, { page: page, noOfElements: size });
+export const getExercise = (id) => get(`${EXERCISE_URL}/${id}`);
+export const getExerciseByName = (name) => get(`${EXERCISE_URL}/name/${name}`);
+export const createExercise = (userId, data) => post(EXERCISE_URL, data, { userId: userId });
+export const updateExercise = (userId, id, data) => put(`${EXERCISE_URL}/${id}`, data, { userId: userId });
+export const deleteExercise = (userId, id) => del(`${EXERCISE_URL}/${id}`, { userId: userId });
+export const getExerciseReviews = (id) => get(`${EXERCISE_URL}/${id}/reviews`);
+export const createExerciseReview = (userId, id, data) => post(`${EXERCISE_URL}/${id}/reviews`, data, { userId: userId });
+export const updateExerciseReview = (userId, id, data) => put(`${EXERCISE_URL}/${id}/reviews`, data, { userId: userId });
+export const deleteExerciseReview = (userId, id) => del(`${EXERCISE_URL}/${id}/reviews`, { userId: userId });
