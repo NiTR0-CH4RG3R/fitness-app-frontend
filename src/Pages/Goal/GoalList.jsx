@@ -42,6 +42,7 @@ export default function GoalList() {
     }
 
     function addGoal(formdata) {
+        console.log(formdata);
         goalService.createGoal(formdata)
             .catch((error) => {
                 console.log(error);

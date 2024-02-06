@@ -12,7 +12,7 @@ export default function useAuthServices() {
                 setAuth({ user, email, accessToken, roles });
             });
 
-    const register = ({ goalNotification = false, workoutPlanNotification = false, otherNotification = false, ...data }) =>
+    const register = ({ goalNotification = false, workoutPlanNotification = false, otherNotification = false, type = 'USER', ...data }) =>
         authAPI.register({ ...data, goalNotification, workoutPlanNotification, otherNotification })
             .then(response => {
                 const { user, accessToken, roles } = validateResponse(response);
