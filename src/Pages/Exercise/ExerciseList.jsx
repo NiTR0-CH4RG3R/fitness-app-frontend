@@ -42,24 +42,32 @@ export default function ExerciseList() {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        (async () => {
-            const exerciseCount = await exerciseService.getExerciseCount();
-            setPageCount(Math.ceil(exerciseCount === null ? sample.length : exerciseCount / cardsPerPage));
-            const exercises = await exerciseService.getExercises(page - 1, cardsPerPage);
-            setExerciseList(exercises === null ? sample : exercises);
-        })();
+        exerciseService.getExerciseCount()
+            .then((count) => {
+                setPageCount(Math.ceil(count === null ? sample.length : count / cardsPerPage));
+                exerciseService.getExercisesPage(page - 1, cardsPerPage)
+                    .then((exercises) => {
+                        setExerciseList(exercises === null ? sample.slice((page - 1) * cardsPerPage, page * cardsPerPage) : exercises);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }, [page]);
 
-    useEffect(() => {
-        if (search === '') {
-            return;
-        }
+    // useEffect(() => {
+    //     if (search === '') {
+    //         return;
+    //     }
 
-        (async () => {
-            const exercises = await exerciseService.getExerciseByName(search);
-            setExerciseList(exercises);
-        })();
-    }, [search]);
+    //     (async () => {
+    //         const exercises = await exerciseService.getExerciseByName(search);
+    //         setExerciseList(exercises);
+    //     })();
+    // }, [search]);
 
     const navigate = useNavigate();
 

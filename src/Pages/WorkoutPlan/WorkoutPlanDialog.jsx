@@ -14,14 +14,14 @@ export default function WorkoutPlanDialog({ isOpen, mode, onSubmit, onClose, ...
 
     useEffect(() => {
         mode === 'edit' && setInitialValues(props);
-        
+
     }, []);
 
-    return ( 
+    return (
         <Dialog
             open={isOpen}
             onClose={onClose}
-            component={ mode === ('add' || 'edit') ? 'form' : 'div' }
+            component={mode === ('add' || 'edit') ? 'form' : 'div'}
             onSubmit={(event) => {
                 event.preventDefault();
                 const formData = new FormData(event.currentTarget);
@@ -30,7 +30,7 @@ export default function WorkoutPlanDialog({ isOpen, mode, onSubmit, onClose, ...
             }}
         >
             <DialogTitle>
-                { mode === 'add' ? 'Add a Workout Plan' : mode === 'edit' ? 'Edit Workout Plan' : 'View Workout Plan' }
+                {mode === 'add' ? 'Add a Workout Plan' : mode === 'edit' ? 'Edit Workout Plan' : 'View Workout Plan'}
             </DialogTitle>
 
         </Dialog>

@@ -53,27 +53,35 @@ export default function WorkoutPlanList() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
 
-    const followWorkoutPlan = async (id) => {
-        await userService.followWorkoutPlan(id);
+    const followWorkoutPlan = (id) => {
+        userService.followWorkoutPlan(id).catch((error) => {
+            console.log(error);
+        });
     }
 
-    const addWorkoutPlan = async (formdata) => {
-        await workoutPlanService.createWorkoutPlan(formdata);
+    const addWorkoutPlan = (formdata) => {
+        workoutPlanService.createWorkoutPlan(formdata).catch((error) => {
+            console.log(error);
+        });
     }
 
-    const editWorkoutPlan = async (formdata) => {
-        await workoutPlanService.updateWorkoutPlan(editDialogState.id, formdata);
+    const editWorkoutPlan = (formdata) => {
+        workoutPlanService.updateWorkoutPlan(editDialogState.id, formdata).catch((error) => {
+            console.log(error);
+        });
     }
 
-    const deleteWorkoutPlan = async (formdata) => {
-        await workoutPlanService.deleteWorkoutPlan(confirmDialogState.id);
+    const deleteWorkoutPlan = (formdata) => {
+        workoutPlanService.deleteWorkoutPlan(confirmDialogState.id).catch((error) => {
+            console.log(error);
+        });
     }
 
     useEffect(() => {
-        (async () => {
-            const isPublic = mode === 'public';
-            try {
-                const response = isPublic ? await workoutPlanService.getPublicWorkoutPlans() : await workoutPlanService.getPrivateWorkoutPlans();
+        const isPublic = mode === 'public';
+
+        (isPublic ? workoutPlanService.getPublicWorkoutPlans() : workoutPlanService.getPrivateWorkoutPlans())
+            .then((response) => {
                 const plans = response.map((workoutplan) => {
                     return {
                         id: workoutplan.id,
@@ -83,7 +91,7 @@ export default function WorkoutPlanList() {
                         createdDate: new Date(workoutplan.createdDate).toLocaleString(),
                         action: (
                             <>
-                                <Button variant='contained' color='success' sx={{ m: 0.3 }} onClick={async () => await followWorkoutPlan(workoutplan.isFollowing ? undefined : workoutplan.id)}> {workoutplan.isFollowing ? <span> Unfollow </span> : <span> Follow </span>} </Button>
+                                <Button variant='contained' color='success' sx={{ m: 0.3 }} onClick={() => followWorkoutPlan(workoutplan.isFollowing ? undefined : workoutplan.id)}> {workoutplan.isFollowing ? <span> Unfollow </span> : <span> Follow </span>} </Button>
                                 {isPublic && <Button variant='contained' color='primary' sx={{ m: 0.3 }} onClick={() => setEditDialogState({ id: workoutplan.id, isOpen: true })}> Edit </Button>}
                                 {isPublic && <Button variant='contained' color='error' sx={{ m: 0.3 }} onClick={() => setConfirmDialogState({ id: workoutplan.id, isOpen: true })}> Delete </Button>}
                             </>
@@ -91,8 +99,7 @@ export default function WorkoutPlanList() {
                     };
                 });
                 setRows(plans);
-            }
-            catch (error) {
+            }).catch((error) => {
                 console.log(error);
                 setRows(mode === 'private' ? [
                     {
@@ -122,8 +129,7 @@ export default function WorkoutPlanList() {
                             )
                         },
                     ]);
-            }
-        })()
+            });
     }, [mode, rowsPerPage, page]);
 
     const handleChange = (event, newMode) => {

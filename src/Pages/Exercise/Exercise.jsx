@@ -28,32 +28,35 @@ export default function Exercise() {
     ]);
 
     useEffect(() => {
-        (async () => {
-            const response = await exerciseService.getExercise(id);
-            const reviews = await exerciseService.getExerciseReviews(id);
-            if (response === null) return;
-            setImage(response.image);
-            setTitle(response.title);
-            setDescription(response.description);
-            setVideo(response.video);
-
-            if (reviews === null) return;
-            setComments(reviews);
-        })();
+        exerciseService.getExercise(id)
+            .then((response) => {
+                setImage(response.image);
+                setTitle(response.title);
+                setDescription(response.description);
+                setVideo(response.video);
+            })
+            .then(() => exerciseService.getExerciseReviews(id))
+            .then((reviews) => {
+                setComments(reviews);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        ;
     }, [id]);
 
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState(0);
 
     function addComment(e) {
-        e.preventDefault();
-        (
-            async () => {
-                await exerciseService.createExerciseReview(id, { comment, rating });
-                const reviews = await exerciseService.getExerciseReviews(id);
+        exerciseService.createExerciseReview(id, { comment, rating })
+            .then(() => exerciseService.getExerciseReviews(id))
+            .then((reviews) => {
                 setComments(reviews);
-            }
-        )();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     return (

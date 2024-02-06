@@ -31,25 +31,36 @@ export default function GoalList() {
     const [editDialogState, setEditDialogState] = useState({ isOpen: false, id: undefined });
     const [addDialogState, setAddDialogState] = useState({ isOpen: false });
 
-    async function deleteGoal(formdata) {
-        await goalService.deleteGoal(deleteDialogState.id);
-        setRows(rows.filter(row => row.id !== deleteDialogState.id));
+    function deleteGoal(formdata) {
+        goalService.deleteGoal(deleteDialogState.id)
+            .then(() => {
+                setRows(rows.filter(row => row.id !== deleteDialogState.id));
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
-    async function addGoal(formdata) {
-        await goalService.addGoal(formdata);
+    function addGoal(formdata) {
+        goalService.createGoal(formdata)
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
-    async function editGoal(formdata) {
-        await goalService.updateGoal(editDialogState.id, formdata);
+    function editGoal(formdata) {
+        goalService.updateGoal(editDialogState.id, formdata).catch((error) => {
+            console.log(error);
+        });
     }
 
     useEffect(() => {
-        (async () => {
-            const response = await goalService.getGoals();
+        goalService.getGoals().then((response) => {
             if (response === null) return;
             setRows(response);
-        })();
+        }).catch((error) => {
+            console.log(error);
+        });
     }, []);
 
     return (

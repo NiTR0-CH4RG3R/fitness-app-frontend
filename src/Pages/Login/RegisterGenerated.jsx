@@ -62,10 +62,10 @@ export default function RegisterGenerated() {
                         emergencyContact: '',
                     }}
                     validationSchema={validationSchema}
-                    onSubmit={async (values, { setSubmitting }) => {
+                    onSubmit={(values, { setSubmitting }) => {
                         try {
                             setSubmitting(true);
-                            await authService.register(values);
+                            authService.register(values);
                             navigate(from, { replace: true });
                         }
                         catch {

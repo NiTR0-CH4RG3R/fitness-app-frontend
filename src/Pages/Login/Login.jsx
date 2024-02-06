@@ -18,13 +18,14 @@ export default function Login() {
 
   async function login(e) {
     e.preventDefault();
-    try {
-      authService.login(email, password);
-      navigate(from, { replace: true });
-    }
-    catch (error) {
-      console.log(error)
-    }
+
+    authService.login(email, password)
+      .then(() => {
+        navigate(from, { replace: true });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   function reset(e) {
